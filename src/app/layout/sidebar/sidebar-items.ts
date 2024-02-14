@@ -42,10 +42,37 @@ export const ROUTES: RouteInfo[] = [
       },
     ],
   },
+
   {
-    path: 'advance-table',
-    title: 'MENUITEMS.ADVANCE-TABLE.TEXT',
-    icon: 'trello',
+    path: 'user',
+    title: 'Inventory',
+    icon: 'truck',
+    class: 'menu-toggle',
+    groupTitle: false,
+    submenu: [
+      {
+        path: '/inventory/item',
+        title: 'Item',
+        icon: '',
+        class: '',
+        groupTitle: false,
+        submenu: [],
+      },
+      {
+        path: '/inventory/where-house',
+        title: 'Where houses',
+        icon: 'trello',
+        class: '',
+        groupTitle: false,
+        submenu: [],
+      },
+
+    ],
+  },
+  {
+    path: '/driver/driver',
+    title: 'Driver',
+    icon: 'truck',
     class: '',
     groupTitle: false,
     submenu: [],

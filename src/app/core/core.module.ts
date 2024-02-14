@@ -5,11 +5,12 @@ import { AuthGuard } from './guard/auth.guard';
 import { AuthService } from './service/auth.service';
 import { throwIfAlreadyLoaded } from './guard/module-import.guard';
 import { DirectionService } from './service/direction.service';
+import { DriversService } from './interceptor/header.service';
 
 @NgModule({
   declarations: [],
   imports: [CommonModule],
-  providers: [RightSidebarService, AuthGuard, AuthService, DirectionService],
+  providers: [RightSidebarService, AuthGuard, AuthService, DirectionService, DriversService],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

@@ -1,0 +1,39 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="table-responsive"> <!-- Add this class for responsiveness -->
+        <table class="table table-striped"> <!-- Add Bootstrap table class and table-striped for striped rows -->
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Driving License Expiration</th>
+              <th>ID Card</th>
+              <th>Kh Name</th>
+              <th>Name</th>
+              <th>Phone No</th>
+              <!-- <th>Images</th> -->
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let driver of drivers">
+              <td>{{ driver.id }}</td>
+              <td>{{ driver.driving_license_expiration }}</td>
+              <td>{{ driver.id_card }}</td>
+              <td>{{ driver.kh_name }}</td>
+              <td>{{ driver.name }}</td>
+              <td>{{ driver.phone_no }}</td>
+              <!-- <td>
+                <img class="Image" [src]="driver.photo" *ngIf="driver.photo" alt="Driver Image">
+              </td> -->
+              <td>
+                <button class="btn btn-primary">Edit</button> <!-- Add Bootstrap button class -->
+                <button class="btn btn-danger">Delete</button> <!-- Add Bootstrap button class -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

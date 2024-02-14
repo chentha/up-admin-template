@@ -18,6 +18,20 @@ const routes: Routes = [
           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
       {
+        path: 'inventory',
+        loadChildren: () =>
+          import('./inventory/inventory.module').then(
+            (m) => m.InventoryModule
+          ),
+      },
+      {
+        path: 'driver',
+        loadChildren: () =>
+          import('./driver/driver.module').then(
+            (m) => m.DriverModule
+          ),
+      },
+      {
         path: 'advance-table',
         loadChildren: () =>
           import('./advance-table/advance-table.module').then(

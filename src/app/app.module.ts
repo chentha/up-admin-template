@@ -25,7 +25,8 @@ import {
 
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { DriversService } from '@core/interceptor/header.service';
+import { HeaderService } from '@core/interceptor/header.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -48,6 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule,
     LoadingBarRouterModule,
+    ReactiveFormsModule,
     NgScrollbarModule,
     TranslateModule.forRoot({
       loader: {
@@ -61,7 +63,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: DriversService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HeaderService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     fakeBackendProvider,
 

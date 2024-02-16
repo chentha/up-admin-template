@@ -11,7 +11,7 @@ export class AuthGuard  {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     console.log('route check')
-    if (this.authService.currentUserValue) {
+    if (localStorage.getItem('sid')) {
       return true;
     }
     this.router.navigate(['/authentication/signin']);

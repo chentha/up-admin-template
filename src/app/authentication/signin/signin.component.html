@@ -20,11 +20,11 @@
                       <div *ngIf="error" class="alert alert-danger mb-3 mt-0">{{error}}</div>
                       <div class="form-group auth-form-group mb-4">
                         <mat-icon matSuffix class="auth-page-icon">email</mat-icon>
-                        <input type="email" formControlName="email" class="form-control auth-control" id="email"
-                          placeholder="Email" [ngClass]="{ 'is-invalid': submitted && form['email'].errors }">
-                        <div *ngIf="submitted && form['email'].errors" class="invalid-feedback">
-                          <div *ngIf="form['email'].errors['required']">Email is required</div>
-                          <div *ngIf="form['email'].errors['email']">Email must be a valid email address</div>
+                        <input type="text" formControlName="username" class="form-control auth-control" id="email"
+                          placeholder="Email" [ngClass]="{ 'is-invalid': submitted && form['username'].errors }">
+                        <div *ngIf="submitted && form['username'].errors" class="invalid-feedback">
+                          <div *ngIf="form['username'].errors['required']">Email is required</div>
+                          <div *ngIf="form['username'].errors['email']">Email must be a valid email address</div>
                         </div>
                       </div>
 
@@ -37,6 +37,16 @@
                           <div *ngIf="form['password'].errors['required']">Password is required</div>
                         </div>
                       </div>
+
+                      <!-- <div class="form-group auth-form-group mb-4">
+                        <mat-icon matSuffix class="auth-page-icon">vpn_key</mat-icon>
+                        <input type="text" formControlName="login_type" class="form-control auth-control"
+                          id="login_type" [ngClass]="{ 'is-invalid': submitted && form['login_type'].errors }"
+                          placeholder="login_type" />
+                        <div *ngIf="submitted && form['password'].errors" class="invalid-feedback">
+                          <div *ngIf="form['password'].errors['required']">Password is required</div>
+                        </div>
+                      </div> -->
 
                       <div class="flex-sb-m w-full p-t-15 p-b-20">
                         <div class="form-check">
@@ -53,7 +63,7 @@
                       </div>
 
                       <div class="container-login100-form-btn">
-                        <button mat-raised-button color="primary" class="login100-form-btn" type="submit">
+                        <button mat-raised-button color="primary" [disabled]="isLoading" class="login100-form-btn" type="submit">
                           Login
                         </button>
                       </div>

@@ -16,6 +16,8 @@ export class AuthService {
 
   base_api = environment.apiUrl
 
+  isLoading = false
+
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(
       JSON.parse(localStorage.getItem('currentUser') || '{}')
@@ -43,32 +45,12 @@ export class AuthService {
       //   })
       // );
   }
-
-
-  // ---------------------------
-  // getUserProfile(): Observable<User> {
-  //   const token = this.currentUserValue.token;
-  //   if (!token) {
-  //     return throwError('User is not authenticated.');
-  //   }
-
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     Authorization: `Bearer ${environment.token}`,
-  //   });
-
-  //   return this.http.get<User>(`${environment.apiUrl}/api/user/login/`, { headers }).pipe(
-  //     catchError((error) => {
-  //       // Handle profile retrieval errors
-  //       return throwError(error);
-  //     })
-  //   );
-  // }
   
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('sid');
     this.router.navigate(['/authentication/signin'])
+    this.isLoading = true
     // this.currentUserSubject.next(this.currentUserValue);
     // return of({ success: false });
   }

@@ -27,6 +27,8 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { HeaderService } from '@core/interceptor/header.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoadingComponent } from '@shared/components/loading/loading.component';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -41,7 +43,7 @@ export function createTranslateLoader(http: HttpClient) {
     RightSidebarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
- 
+    LoadingComponent,
   ],
   imports: [
     BrowserModule,

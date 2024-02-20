@@ -1,8 +1,11 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="table-responsive"> <!-- Add this class for responsiveness -->
-        <table class="table table-striped"> <!-- Add Bootstrap table class and table-striped for striped rows -->
+      <div class="table-responsive">
+        <button class="btn_create" mat-raised-button (click)="openCreate('300ms', '300ms')">Add New</button><br><br>
+        <table class="table table-striped"> 
           <thead>
             <tr>
               <th>ID</th>
@@ -11,7 +14,7 @@
               <th>Kh Name</th>
               <th>Name</th>
               <th>Phone No</th>
-              <!-- <th>Images</th> -->
+              <th>Images</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -23,12 +26,12 @@
               <td>{{ driver.kh_name }}</td>
               <td>{{ driver.name }}</td>
               <td>{{ driver.phone_no }}</td>
-              <!-- <td>
-                <img class="Image" [src]="driver.photo" *ngIf="driver.photo" alt="Driver Image">
-              </td> -->
               <td>
-                <button class="btn btn-primary">Edit</button> <!-- Add Bootstrap button class -->
-                <button class="btn btn-danger">Delete</button> <!-- Add Bootstrap button class -->
+                <img class="Image" [src]="driver.photo" *ngIf="driver.photo" alt="Driver Image">
+              </td>
+              <td>
+                <span class="btn icon1" mat-raised-button (click)="openEdit(driver)"><i class="fa-regular fa-pen-to-square"></i></span> 
+                <span class="btn icon2" (click)="deleteData(driver)"><i class="fa-regular fa-trash-can"></i></span> 
               </td>
             </tr>
           </tbody>

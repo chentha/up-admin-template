@@ -27,7 +27,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { HeaderService } from '@core/interceptor/header.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { DailogCreateFormComponent } from './popup/dailog-create-form/dailog-create-form.component';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -43,7 +43,7 @@ export function createTranslateLoader(http: HttpClient) {
     RightSidebarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
-    LoadingComponent,
+    DailogCreateFormComponent,
   ],
   imports: [
     BrowserModule,

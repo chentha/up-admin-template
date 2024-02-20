@@ -1,0 +1,37 @@
+
+<h2 style="margin-left: 20px;" mat-dialog-title>Create New Information</h2>
+<mat-dialog-content>
+  <form [formGroup]="dataForm" class="form">
+    <label for="driving_license_expiration">Expiration</label>
+    <input class="input_box" type="date" id="driving_license_expiration" formControlName="driving_license_expiration"><br>
+
+    <label for="id_card">ID Card</label>
+    <input class="input_box" type="text" id="id_card" formControlName="id_card"><br>
+
+    <label for="kh_name">Kh Name</label>
+    <input class="input_box" type="text" id="kh_name" formControlName="kh_name"><br>
+
+    <label for="name">Name</label>
+    <input class="input_box" type="text" id="name" formControlName="name"><br>
+
+    <label for="phone_no">Phone No</label>
+    <input class="input_box" type="text" id="phone_no" formControlName="phone_no"><br><br>
+
+    <label for="photo">Photo:</label>
+    <input type="file" id="photo" (change)="onFileSelected($event)">
+    <br><br>
+    <img *ngIf="imageSrc" [src]="imageSrc" alt="Uploaded Photo" width="150">
+    <br><br>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>  
+  <button mat-button mat-dialog-close class="btn_concel">Concel</button>
+  <div *ngIf="edit">
+    <button mat-button mat-dialog-close cdkFocusInitial type="submit" (click)="updateData()" class="btn_submit" [disabled]="dataForm.invalid">Edit</button>
+    <button class="btn_remove" *ngIf="imageSrc" (click)="clearImage()">Remove Image</button>
+  </div>
+  <div *ngIf="!edit"> 
+    <button mat-button mat-dialog-close cdkFocusInitial type="submit" (click)="postData()" class="btn_submit" [disabled]="dataForm.invalid">Submit</button>
+    <button class="btn_remove" *ngIf="imageSrc" (click)="clearImage()">Remove Image</button>
+  </div>
+</mat-dialog-actions>

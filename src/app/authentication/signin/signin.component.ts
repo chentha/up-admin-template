@@ -9,7 +9,7 @@ import {
 import { AuthService } from '@core';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
 // import { AES } from 'crypto-js';
-import * as cryptojs from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
   
 
 @Component({
@@ -28,7 +28,7 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
   isLoading = false;
   rememberMeChecked = false;
 
-  encryptionKey = 'yourEncryptionKey'; // Replace with your encryption key
+  encryptionKey = 'yourEncryptionKey'; 
 
   constructor(
     private formBuilder: FormBuilder,
@@ -123,11 +123,11 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
   }
 
   encryptData(data: string): string {
-    return cryptojs.AES.encrypt(data, this.encryptionKey).toString();
+    return CryptoJS.AES.encrypt(data, this.encryptionKey).toString();
   }
 
   decryptData(encryptedData: string): string {
-    return cryptojs.AES.decrypt(encryptedData, this.encryptionKey).toString(cryptojs.enc.Utf8);
+    return CryptoJS.AES.decrypt(encryptedData, this.encryptionKey).toString(CryptoJS.enc.Utf8);
   }
 
 }

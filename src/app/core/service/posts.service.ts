@@ -10,16 +10,17 @@ import { Observable } from 'rxjs';
 })
 export class PostsService implements OnInit{
 
-  base_api = environment.apiUrl
-
-  ngOnInit(): void {
-    this.getData()
-  }
+  base_api = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
+  ngOnInit(): void {
+    // It's not recommended to fetch data directly in the service constructor or OnInit
+    // this.getData();
+  }
+
   getData(): Observable<any> {
-    return this.http.get<any>(this.base_api + '/api/fleet/driver/');
+    return this.http.get<any>(`${this.base_api}/api/fleet/driver/`);
   }
 
   dataForm = new FormGroup({
@@ -33,23 +34,23 @@ export class PostsService implements OnInit{
   drivers: any;
 
   postData(formData: any): Observable<any>{
-    return this.http.post<any >(this.base_api + '/api/fleet/driver/', formData );
+    return this.http.post<any>(`${this.base_api}/api/fleet/driver/`, formData );
   }
 
   deleteData(driverId: string): Observable<any> {
-    return this.http.delete<any>(this.base_api + '/api/fleet/driver/' + driverId);
+    return this.http.delete<any>(`${this.base_api}/api/fleet/driver/${driverId}`);
   }
 
   editData(driverId: string, dataForm: any): Observable<any> {
-    return this.http.patch<any>(this.base_api + '/api/fleet/driver/' + driverId + '/', dataForm);
+    return this.http.patch<any>(`${this.base_api}/api/fleet/driver/${driverId}/`, dataForm);
   }
 
   uploadImage(formData: FormData) {
-    return this.http.post<any>(`${this.base_api}+ '/api/fleet/driver/'+/upload-image`, formData);
+    return this.http.post<any>(`${this.base_api}/api/fleet/driverimage/upload-image`, formData);
   }
 
   editImage(formData: FormData) {
-    return this.http.patch<any>(`${this.base_api}++ '/api/fleet/driver/'+ /upload-image`, formData);
+    return this.http.patch<any>(`${this.base_api}/api/fleet/driverimage/`, formData);
   }
 
 }

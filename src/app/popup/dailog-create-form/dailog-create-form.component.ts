@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnChanges, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PostsService } from '@core/service/posts.service';
 import { DriverComponent } from 'app/driver/driver.component';
+import { Subject, BehaviorSubject, tap, exhaustMap } from 'rxjs';
 
 interface Driver {
   photo: any;
@@ -20,24 +21,25 @@ interface Driver {
   templateUrl: './dailog-create-form.component.html',
   styleUrls: ['./dailog-create-form.component.scss']
 })
-export class DailogCreateFormComponent implements OnInit {
+export class DailogCreateFormComponent implements OnInit, OnChanges {
+  service: any;
+  refreshing: any;
 
   constructor(
     public dialogRef: MatDialogRef<DriverComponent>,
     private postsService: PostsService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { dialogRef.disableClose = true; }
-
-  drivers: any;
+ 
   edit: boolean = false;
   isDisable: boolean = true;
 
   dataForm = new FormGroup({
-    driving_license_expiration: new FormControl(''),
-    id_card: new FormControl(''),
-    kh_name: new FormControl(''),
+    driving_license_expiration: new FormControl('', [Validators.required]),
+    id_card: new FormControl('', [Validators.required]),
+    kh_name: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),
-    phone_no: new FormControl(''),
+    phone_no: new FormControl('', [Validators.required]),
     photo: new FormControl<File | null | undefined>(null)
   });
 
@@ -57,14 +59,20 @@ export class DailogCreateFormComponent implements OnInit {
     console.log(this.data)
 
     if (this.data) {
+      this.edit = true
+      this.isDisable = true
       this.dataForm.patchValue({
         name: this.data.name,
         kh_name: this.data.kh_name,
         id_card: this.data.id_card,
         driving_license_expiration: this.data.driving_license_expiration,
-        phone_no: this.data.phone_no
+        phone_no: this.data.phone_no,
       });
     }
+  }
+
+  ngOnChanges() {
+    console.log('In toolbar', this.refreshing);
   }
 
   selectedFile: File | null = null;
@@ -92,35 +100,10 @@ export class DailogCreateFormComponent implements OnInit {
 
       this.postsService.postData(formData).subscribe(
         (response) => {
-          console.log('Data with image uploaded successfully!', response);
-          this.getData();
+          console.log('Data with image uploaded successfully!', response); 
         },
         (error) => {
           console.error('Error uploading data with image:', error);
-        }
-      );
-    } else {
-      console.error('No file selected.');
-    }
-  }
-
-  onEditImage() {
-    if (this.selectedFile) {
-      const formData = new FormData();
-      formData.append('photo', this.selectedFile);
-      formData.append('driving_license_expiration', this.dataForm.controls.driving_license_expiration.value || '');
-      formData.append('id_card', this.dataForm.controls.id_card.value || '');
-      formData.append('kh_name', this.dataForm.controls.kh_name.value || '');
-      formData.append('name', this.dataForm.controls.name.value || '');
-      formData.append('phone_no', this.dataForm.controls.phone_no.value || '');
-
-      this.postsService.editImage(formData).subscribe(
-        (response) => {
-          console.log('Data with image edited successfully!', response);
-          this.getData();
-        },
-        (error) => {
-          console.error('Error editing data with image:', error);
         }
       );
     } else {
@@ -143,71 +126,42 @@ export class DailogCreateFormComponent implements OnInit {
       const formData = this.dataForm.value;
 
       this.postsService.postData(formData).subscribe(response => {
-        console.log('Response:', response);
-        this.getData();
+        // window.location.reload();
+        console.log('Response:', response); 
       }, error => {
         console.error('Error:', error);
       });
     }
   }
-
-  getData() {
-    this.postsService.getData()
-      .subscribe(response => {
-        console.log('response', response);
-        this.drivers = response.results;
-      });
-  }
+ 
 
   updateData() {
-    if (this.data) {
-      if (this.selectedFile) {
-        console.log('run')
-        const formData = new FormData();
-        formData.append('photo', this.selectedFile);
-        formData.append('driving_license_expiration', this.dataForm.controls.driving_license_expiration.value || '');
-        formData.append('id_card', this.dataForm.controls.id_card.value || '');
-        formData.append('kh_name', this.dataForm.controls.kh_name.value || '');
-        formData.append('name', this.dataForm.controls.name.value || '');
-        formData.append('phone_no', this.dataForm.controls.phone_no.value || '');
-  
-        this.postsService.editImage(formData).subscribe(
-          (response: any) => {
-            console.log('Driver updated successfully with image!');
-            const updatedDriver = { ...this.dataForm.value, photo: response.photo };
-            this.updateDriverInList(updatedDriver);
-            this.dialogRef.close(); // Close the dialog after updating
-          },
-          (error: any) => {
-            console.error('Error updating driver with image:', error);
-          }
-        );
-      } else {
-        const dataFormValue = this.dataForm.value;
-  
-        this.postsService.editData(this.data.id, dataFormValue).subscribe(
-          () => {
-            console.log('Driver updated successfully without changing image');
-            this.updateDriverInList(dataFormValue);
-            this.dialogRef.close(); // Close the dialog after updating
-          },
-          (error: any) => {
-            console.error('Error updating driver:', error);
-          }
-        );
-      }
-    } else {
+    if (!this.data) {
       console.error('No driver data received.');
+      this.edit = true;
+      return;
     }
-  }
   
-  private updateDriverInList(updatedDriver: any) {
-    const index = this.drivers.findIndex((d: any) => d.id === this.data.id);
-    if (index !== -1) {
-      this.drivers[index] = { ...this.drivers[index], ...updatedDriver };
-      this.getData(); // Refresh the data list
-    }
+    const formData = new FormData();
+    formData.append('photo', this.selectedFile || '');
+    formData.append('driving_license_expiration', this.dataForm.controls.driving_license_expiration.value || '');
+    formData.append('id_card', this.dataForm.controls.id_card.value || '');
+    formData.append('kh_name', this.dataForm.controls.kh_name.value || '');
+    formData.append('name', this.dataForm.controls.name.value || '');
+    formData.append('phone_no', this.dataForm.controls.phone_no.value || '');
+  
+    this.postsService.editData(this.data.id, formData).subscribe(
+      (response: any) => {
+        console.log('Driver updated successfully!');
+        // const updatedDriver = { ...this.dataForm.value, photo: response.photo }; 
+        this.dialogRef.close();
+      },
+      (error: any) => {
+        console.error('Error updating driver:', error);
+      }
+    );
   }
+ 
   
   editData(driver: Driver) {
     this.edit = true;
@@ -216,9 +170,9 @@ export class DailogCreateFormComponent implements OnInit {
       kh_name: driver.kh_name,
       id_card: driver.id_card,
       driving_license_expiration: driver.driving_license_expiration,
-      phone_no: driver.phone_no
+      phone_no: driver.phone_no,
+      photo: driver.photo 
     });
-  
     this.imageSrc = driver.photo;
   }
 }

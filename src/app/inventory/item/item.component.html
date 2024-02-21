@@ -1,1 +1,71 @@
-<p>item works!</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="container-fluid">
+                <div class="alert alert-success" role="alert" *ngIf="showAlert">
+                    {{ alertMessage }}
+                </div>
+                <button class="btn btn-success" (click)="addNewRow()">Add New Row</button><br><br>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Kh_Name</th>
+                                <th>Grade</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of rows; let i = index" [id]="'row_' + row.id">
+                                <td>{{ row.id }}</td>
+                                <td>
+                                    <input type="text" class="form-control" name="name{{i}}" [(ngModel)]="row.name">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="age{{i}}" [(ngModel)]="row.age">
+                                </td>
+                                <td>
+                                    <select class="form-select" name="gender{{i}}" [(ngModel)]="row.gender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="kh_name{{i}}"
+                                        [(ngModel)]="row.kh_name">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="grade{{i}}" [(ngModel)]="row.grade">
+                                </td>
+                                <td class="box_action">
+                                    <button class="btn1" (click)="saveRow(i)" *ngIf="row.isNew"
+                                        [disabled]="!row.isNew"><i class="fa-solid fa-check"></i></button>
+                                    <button class="btn2" (click)="cancelRow(i)" *ngIf="row.isNew"
+                                        [disabled]="!row.isNew"><i class="fa-solid fa-xmark"></i></button>
+                                    <button class="btn1" (click)="editRow(i)" *ngIf="!row.isNew"><i
+                                            class="fa-regular fa-pen-to-square"></i></button>
+                                    <button class="btn2" (click)="deleteRow(i)" *ngIf="!row.isNew"><i
+                                            class="fa-regular fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: right;">
+                    <button class="btn btn-success" (click)="showDataAsJson()">Show Data</button>
+                </div>
+
+                <div *ngIf="jsonData">
+                    <h4>Data in JSON format:</h4>
+                    <pre>{{jsonData }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

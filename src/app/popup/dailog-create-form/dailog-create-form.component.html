@@ -27,10 +27,11 @@
 <mat-dialog-actions>  
   <button mat-button mat-dialog-close class="btn_concel">Concel</button>
   <div *ngIf="edit">
-    <button mat-button mat-dialog-close cdkFocusInitial type="submit" (click)="updateData()" class="btn_submit" [disabled]="dataForm.invalid">Edit</button>
+   
     <button class="btn_remove" *ngIf="imageSrc" (click)="clearImage()">Remove Image</button>
   </div>
-  <div *ngIf="!edit"> 
+  <div *ngIf="!edit">  
+    <button mat-button mat-dialog-close cdkFocusInitial type="submit" (click)="updateData()" class="btn_submit" [disabled]="dataForm.invalid">Edit</button>
     <button mat-button mat-dialog-close cdkFocusInitial type="submit" (click)="postData()" class="btn_submit" [disabled]="dataForm.invalid">Submit</button>
     <button class="btn_remove" *ngIf="imageSrc" (click)="clearImage()">Remove Image</button>
   </div>

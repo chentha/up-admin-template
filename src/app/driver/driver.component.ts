@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PostsService } from '@core/service/posts.service';
 import { DailogCreateFormComponent } from 'app/popup/dailog-create-form/dailog-create-form.component';
+import { BehaviorSubject, Subject, Subscription, exhaustMap, tap } from 'rxjs';
 
 interface Driver {
   photo: any;
@@ -18,8 +19,9 @@ interface Driver {
   templateUrl: './driver.component.html',
   styleUrls: ['./driver.component.scss']
 })
-export class DriverComponent implements OnInit {
+export class DriverComponent implements OnInit, OnChanges {
   drivers: any;
+  @Input() refreshing=false;
 
   driver: Driver = {
     driving_license_expiration: '',
@@ -30,12 +32,25 @@ export class DriverComponent implements OnInit {
     id: '',
     photo: undefined
   };
+  service: any;
+  refreshData: any;
 
+  constructor(private postsService: PostsService, public dialog: MatDialog) {
+
+    this.postsService.refreshNeeded$.subscribe(()=>{
+      this.getData()
+    })
+  }
+ 
   ngOnInit(): void {
     this.getData()
+  
   }
 
-  edit: boolean = false
+  ngOnChanges() {
+    console.log('In toolbar', this.refreshing);
+  }
+
   isDisable: boolean = true
 
   dataForm = new FormGroup({
@@ -47,9 +62,6 @@ export class DriverComponent implements OnInit {
     photo: new FormControl<File | null | undefined>(null)
   });
 
-  imageSrc: any;
-
-  constructor(private postsService:PostsService, public dialog: MatDialog) { }
 
   openCreate(enterAnimationDuration: string, exitAnimationDuration: string): void {
     this.dialog.open(DailogCreateFormComponent, {
@@ -60,42 +72,25 @@ export class DriverComponent implements OnInit {
     });
   }
 
+  //sort table to all value 
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
-  selectedFile: File | null = null;
-
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0] as File;
-    if (this.selectedFile) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imageSrc = e.target.result;
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
-  }
-
-  onEditImage() {
-    if (this.selectedFile) {
-      const formData = new FormData();
-      formData.append('photo', this.selectedFile);
-      formData.append('driving_license_expiration', this.dataForm.controls.driving_license_expiration.value || '');
-      formData.append('id_card', this.dataForm.controls.id_card.value || '');
-      formData.append('kh_name', this.dataForm.controls.kh_name.value || '');
-      formData.append('name', this.dataForm.controls.name.value || '');
-      formData.append('phone_no', this.dataForm.controls.phone_no.value || '');
-
-      this.postsService.editImage(formData).subscribe(
-        (response) => {
-          console.log('Data with image edited successfully!', response);
-          this.getData();
-        },
-        (error) => {
-          console.error('Error editing data with image:', error);
-        }
-      );
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      console.error('No file selected.');
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
     }
+
+    this.drivers.sort((a: any, b: any) => {
+      const valueA = a[this.sortColumn];
+      const valueB = b[this.sortColumn];
+      if (valueA < valueB) return this.sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
   }
 
   getData() {
@@ -107,7 +102,6 @@ export class DriverComponent implements OnInit {
   }
 
   deleteData(driver: Driver) {
-    console.log(driver.id);
     this.postsService.deleteData(driver.id).subscribe(
       () => {
         console.log('Driver deleted successfully');
@@ -119,45 +113,13 @@ export class DriverComponent implements OnInit {
     );
   }
 
-  updateData() {
-    console.log('hi')
-    if (this.selectedFile) {
-      this.onEditImage();
-    } else {
-      let dataForm1 = {
-        "name": this.dataForm.controls.name.value,
-        "kh_name": this.dataForm.controls.kh_name.value,
-        "id_card": this.dataForm.controls.id_card.value,
-        "driving_license_expiration": this.dataForm.controls.driving_license_expiration.value,
-        "phone_no": this.dataForm.controls.phone_no.value,
-      };
-
-      this.postsService.editData(this.driver.id, dataForm1).subscribe(
-        () => {
-          console.log('Driver updated successfully without changing image');
-          const index = this.drivers.findIndex((d: { id: string; }) => d.id === this.driver.id);
-          if (index !== -1) {
-            this.drivers[index] = { ...this.drivers[index], ...dataForm1 };
-          }
-          this.getData(); 
-        },
-        error => {
-          console.error('Error updating driver:', error);
-        }
-      );
-    }
-  }
-
-
   openEdit(driver: Driver): void {
     this.dialog.open(DailogCreateFormComponent, {
       disableClose: true,
       width: '900px',
       enterAnimationDuration: '300ms',
-      exitAnimationDuration:'300ms',
-      data:driver
+      exitAnimationDuration: '300ms',
+      data: driver
     });
   }
-
-
 }

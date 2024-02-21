@@ -8,12 +8,24 @@
         <table class="table table-striped"> 
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Driving License Expiration</th>
-              <th>ID Card</th>
-              <th>Kh Name</th>
-              <th>Name</th>
-              <th>Phone No</th>
+              <th (click)="sortData('id')">
+                ID <i class="fa fa-caret-{{sortColumn === 'id' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
+              <th (click)="sortData('driving_license_expiration')">
+                License Expiration <i class="fa fa-caret-{{sortColumn === 'driving_license_expiration' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
+              <th (click)="sortData('id_card')">
+                ID Card <i class="fa fa-caret-{{sortColumn === 'id_card' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
+              <th (click)="sortData('kh_name')">
+                Kh Name <i class="fa fa-caret-{{sortColumn === 'kh_name' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
+              <th (click)="sortData('name')">
+                Name <i class="fa fa-caret-{{sortColumn === 'name' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
+              <th (click)="sortData('phone_no')">
+                Phone No <i class="fa fa-caret-{{sortColumn === 'phone_no' && sortDirection === 'asc' ? 'up' : 'down'}}"></i>
+              </th>
               <th>Images</th>
               <th>Actions</th>
             </tr>
@@ -36,6 +48,7 @@
             </tr>
           </tbody>
         </table>
+        
       </div>
     </div>
   </div>

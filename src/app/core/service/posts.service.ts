@@ -3,20 +3,21 @@ import { Injectable, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HeaderService } from '@core/interceptor/header.service';
 import { environment } from 'environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Subject, delay, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PostsService implements OnInit{
+export class PostsService{
 
   base_api = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
-  ngOnInit(): void {
-    // It's not recommended to fetch data directly in the service constructor or OnInit
-    // this.getData();
+   _refreshNeeded$ = new Subject<void>();
+
+  get refreshNeeded$() {
+    return this._refreshNeeded$;
   }
 
   getData(): Observable<any> {
@@ -34,23 +35,48 @@ export class PostsService implements OnInit{
   drivers: any;
 
   postData(formData: any): Observable<any>{
-    return this.http.post<any>(`${this.base_api}/api/fleet/driver/`, formData );
+    return this.http.post<any>(`${this.base_api}/api/fleet/driver/`, formData )
+    .pipe(
+      tap(() =>  {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   deleteData(driverId: string): Observable<any> {
-    return this.http.delete<any>(`${this.base_api}/api/fleet/driver/${driverId}`);
+    return this.http.delete<any>(`${this.base_api}/api/fleet/driver/${driverId}`)
+    .pipe(
+      tap(() =>  {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   editData(driverId: string, dataForm: any): Observable<any> {
-    return this.http.patch<any>(`${this.base_api}/api/fleet/driver/${driverId}/`, dataForm);
+    return this.http.patch<any>(`${this.base_api}/api/fleet/driver/${driverId}/`, dataForm)
+    .pipe(
+      tap(() =>  {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   uploadImage(formData: FormData) {
-    return this.http.post<any>(`${this.base_api}/api/fleet/driverimage/upload-image`, formData);
+    return this.http.post<any>(`${this.base_api}/api/fleet/driverimage/upload-image`, formData)
+    .pipe(
+      tap(() =>  {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
   editImage(formData: FormData) {
-    return this.http.patch<any>(`${this.base_api}/api/fleet/driverimage/`, formData);
+    return this.http.patch<any>(`${this.base_api}/api/fleet/driverimage/`, formData)
+    .pipe(
+      tap(() =>  {
+        this._refreshNeeded$.next();
+      })
+    );
   }
 
 }

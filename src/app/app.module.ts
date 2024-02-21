@@ -43,7 +43,6 @@ export function createTranslateLoader(http: HttpClient) {
     RightSidebarComponent,
     AuthLayoutComponent,
     MainLayoutComponent,
-    DailogCreateFormComponent,
   ],
   imports: [
     BrowserModule,

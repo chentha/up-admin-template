@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-item',
@@ -11,13 +11,10 @@ export class ItemComponent {
   jsonData: string = '';
   showAlert: boolean = false;
   alertMessage: string = '';
-  rows = [{ id: 1, name: '', age: '', gender: '', grade: '', kh_name: '', isNew: true, saved: false }];
-  editingIndex: number | null = null;
-
-  addNewRow() {
-    const newRowId = this.rows.length + 1;
-    this.rows.push({ id: newRowId, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false });
-  }
+  rows = [
+    { id: 1, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true },
+    { id: 2, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true }
+  ];
 
   currentPage = 1;
   itemsPerPage = 10;
@@ -27,20 +24,25 @@ export class ItemComponent {
     this.itemsPerPage = event.pageSize;
   }
 
+  addNewRow() {
+    const newRowId = this.rows.length + 1;
+    this.rows.push({ id: newRowId, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true });
+  }
+
   saveRow(index: number) {
     if (!this.isRowValid(this.rows[index])) {
       return;
     }
     this.rows[index].isNew = false;
     this.rows[index].saved = true;
-    this.editingIndex = null;
+    this.rows[index].editing = false;
     this.showAlertMessage('Saved successfully!');
     console.log("Saved row:", this.rows[index]);
   }
 
   editRow(index: number) {
-    this.editingIndex = index;
-    this.showAlertMessage('Editing row...');
+    this.rows[index].editing = !this.rows[index].editing;
+    // this.showAlertMessage(`Editing row ${index + 1}...`);
     console.log("Editing row:", this.rows[index]);
   }
 
@@ -52,20 +54,19 @@ export class ItemComponent {
     if (this.rows[index].isNew) {
       this.rows.splice(index, 1);
     } else {
-      this.rows[index].isNew = true;
-      this.rows[index].saved = true;
-      this.editingIndex = null;
+      this.rows[index].saved = false;
+      this.rows[index].editing = false;
     }
   }
 
   isRowValid(row: any): boolean {
     return row.name && row.age && row.gender && row.kh_name && row.grade;
-
   }
 
   showDataAsJson() {
-    this.jsonData = JSON.stringify(this.rows, null, 1);
-  }
+    const dataToDisplay = this.rows.map(({id, name, age, gender, kh_name, grade }) => ({id, name, age, gender, kh_name, grade }));
+    this.jsonData = JSON.stringify(dataToDisplay, null, 2);
+  }  
 
   showAlertMessage(message: string) {
     this.alertMessage = message;
@@ -74,5 +75,4 @@ export class ItemComponent {
       this.showAlert = false;
     }, 2000);
   }
-
 }

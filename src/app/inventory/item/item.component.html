@@ -9,7 +9,7 @@
                 </div>
                 <button class="btn btn-success" (click)="addNewRow()">Add New Row</button><br><br>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-striped table-hover" >
                         <thead class="thead-dark">
                             <tr>
                                 <th>Id</th>
@@ -22,41 +22,65 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let row of rows; let i = index" [id]="'row_' + row.id">
+                            <tr *ngFor="let row of rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); let i = index" [id]="'row_' + row.id">
                                 <td>{{ row.id }}</td>
                                 <td>
-                                    <input type="text" class="form-control" name="name{{i}}" [(ngModel)]="row.name">
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <input type="text" class="form-control" name="name{{i}}" [(ngModel)]="row.name">
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">{{ row.name }}</ng-container>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="age{{i}}" [(ngModel)]="row.age">
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <input type="text" class="form-control" name="age{{i}}" [(ngModel)]="row.age">
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">{{ row.age }}</ng-container>
                                 </td>
                                 <td>
-                                    <select class="form-select" name="gender{{i}}" [(ngModel)]="row.gender">
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </select>
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <select class="form-select" name="gender{{i}}" [(ngModel)]="row.gender">
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">{{ row.gender }}</ng-container>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="kh_name{{i}}"
-                                        [(ngModel)]="row.kh_name">
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <input type="text" class="form-control" name="kh_name{{i}}" [(ngModel)]="row.kh_name">
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">{{ row.kh_name }}</ng-container>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" name="grade{{i}}" [(ngModel)]="row.grade">
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <input type="text" class="form-control" name="grade{{i}}" [(ngModel)]="row.grade">
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">{{ row.grade }}</ng-container>
                                 </td>
+                                
                                 <td class="box_action">
-                                    <button class="btn1" (click)="saveRow(i)" *ngIf="row.isNew"
-                                        [disabled]="!row.isNew"><i class="fa-solid fa-check"></i></button>
-                                    <button class="btn2" (click)="cancelRow(i)" *ngIf="row.isNew"
-                                        [disabled]="!row.isNew"><i class="fa-solid fa-xmark"></i></button>
-                                    <button class="btn1" (click)="editRow(i)" *ngIf="!row.isNew"><i
-                                            class="fa-regular fa-pen-to-square"></i></button>
-                                    <button class="btn2" (click)="deleteRow(i)" *ngIf="!row.isNew"><i
-                                            class="fa-regular fa-trash-can"></i></button>
+                                    <ng-container *ngIf="editingIndex === i || row.isNew">
+                                        <button class="btn1" (click)="saveRow(i)">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                        <button class="btn2" (click)="cancelRow(i)">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </ng-container>
+                                    <ng-container *ngIf="editingIndex !== i && !row.isNew">
+                                        <button class="btn1" (click)="editRow(i)">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="btn2" (click)="deleteRow(i)">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </ng-container>
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
-                </div>
+                    </table> 
+                    <mat-paginator showFirstLastButtons [length]="rows.length" [pageSize]="itemsPerPage" [pageSizeOptions]="[5, 10, 20]" (page)="pageChanged($event)"></mat-paginator>
+                </div><br>
                 <div style="float: right;">
                     <button class="btn btn-success" (click)="showDataAsJson()">Show Data</button>
                 </div>

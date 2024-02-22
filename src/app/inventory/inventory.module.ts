@@ -6,6 +6,7 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { InventoryComponent } from './inventory.component';
 import { ItemComponent } from './item/item.component';
 import { WhereHouseComponent } from './where-house/where-house.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [InventoryComponent, ItemComponent, WhereHouseComponent],
@@ -14,7 +15,8 @@ import { WhereHouseComponent } from './where-house/where-house.component';
     InventoryRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    MatPaginatorModule
   ],
   providers:[
     

@@ -6,16 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./item.component.scss']
 })
 export class ItemComponent {
-
   name = 'Angular';
   jsonData: string = '';
-  showAlert: boolean = false;
-  alertMessage: string = '';
-  rows = [
-    { id: 1, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true },
-    { id: 2, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true }
-  ];
+  editedRows: any[] = [];
 
+  rows = [
+    { id: 1, name: '1', age: '1', gender: 'male', kh_name: '1', grade: '1', isNew: false, saved: true, editing: false },
+    { id: 2, name: '2', age: '2', gender: 'male', kh_name: '2', grade: '2', isNew: false, saved: true, editing: false }
+  ];
+ 
   currentPage = 1;
   itemsPerPage = 10;
 
@@ -23,10 +22,16 @@ export class ItemComponent {
     this.currentPage = event.pageIndex + 1;
     this.itemsPerPage = event.pageSize;
   }
-
+  
   addNewRow() {
     const newRowId = this.rows.length + 1;
     this.rows.push({ id: newRowId, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true });
+  }
+  
+  
+  allInputsFilled(index: number): boolean {
+    const row = this.rows[index];
+    return !!row.name && !!row.age && !!row.gender && !!row.kh_name && !!row.grade;
   }
 
   saveRow(index: number) {
@@ -36,13 +41,12 @@ export class ItemComponent {
     this.rows[index].isNew = false;
     this.rows[index].saved = true;
     this.rows[index].editing = false;
-    this.showAlertMessage('Saved successfully!');
     console.log("Saved row:", this.rows[index]);
   }
 
   editRow(index: number) {
-    this.rows[index].editing = !this.rows[index].editing;
-    // this.showAlertMessage(`Editing row ${index + 1}...`);
+    this.rows[index].editing = true;
+    this.editedRows[index] = { ...this.rows[index] };
     console.log("Editing row:", this.rows[index]);
   }
 
@@ -54,6 +58,7 @@ export class ItemComponent {
     if (this.rows[index].isNew) {
       this.rows.splice(index, 1);
     } else {
+      this.rows[index] = { ...this.editedRows[index] };
       this.rows[index].saved = false;
       this.rows[index].editing = false;
     }
@@ -64,15 +69,14 @@ export class ItemComponent {
   }
 
   showDataAsJson() {
-    const dataToDisplay = this.rows.map(({id, name, age, gender, kh_name, grade }) => ({id, name, age, gender, kh_name, grade }));
+    const dataToDisplay = this.rows.map(({ id, name, age, gender, kh_name, grade, isNew }) => {
+      if (id !== undefined) {
+        return { id, name, age, gender, kh_name, grade, isNew };
+      } else {
+        return { name, age, gender, kh_name, grade, isNew };
+      }
+    });
     this.jsonData = JSON.stringify(dataToDisplay, null, 2);
-  }  
-
-  showAlertMessage(message: string) {
-    this.alertMessage = message;
-    this.showAlert = true;
-    setTimeout(() => {
-      this.showAlert = false;
-    }, 2000);
   }
+  
 }

@@ -4,12 +4,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="container-fluid">
-                <div class="alert alert-success" role="alert" *ngIf="showAlert">
-                    {{ alertMessage }}
-                </div>
                 <button class="btn btn-success" (click)="addNewRow()">Add New Row</button><br><br>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" >
+                    <table class="table table-bordered table-striped table-hover">
                         <thead class="thead-dark">
                             <tr>
                                 <th>No</th>
@@ -23,7 +20,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let row of rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); let i = index">
-                                <td>{{ row.id }}</td>
+                                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
                                 <td>
                                     <ng-container *ngIf="row.editing">
                                         <input type="text" class="form-control" name="name{{i}}" [(ngModel)]="row.name">
@@ -47,23 +44,25 @@
                                 </td>
                                 <td>
                                     <ng-container *ngIf="row.editing">
-                                        <input type="text" class="form-control" name="kh_name{{i}}" [(ngModel)]="row.kh_name">
+                                        <input type="text" class="form-control" name="kh_name{{i}}"
+                                            [(ngModel)]="row.kh_name">
                                     </ng-container>
                                     <ng-container *ngIf="!row.editing">{{ row.kh_name }}</ng-container>
                                 </td>
                                 <td>
                                     <ng-container *ngIf="row.editing">
-                                        <input type="text" class="form-control" name="grade{{i}}" [(ngModel)]="row.grade">
+                                        <input type="text" class="form-control" name="grade{{i}}"
+                                            [(ngModel)]="row.grade">
                                     </ng-container>
                                     <ng-container *ngIf="!row.editing">{{ row.grade }}</ng-container>
                                 </td>
-                                
                                 <td class="box_action">
                                     <ng-container *ngIf="row.editing">
-                                        <button class="btn1" (click)="saveRow(i)">
+                                        <button class="btn1" [hidden]="!allInputsFilled(i)" (click)="saveRow(i)">
                                             <i class="fa-solid fa-check"></i>
                                         </button>
-                                        <button class="btn2" (click)="cancelRow(i)">
+                                        <button class="btn2" [ngClass]="{'ml-auto': !allInputsFilled(i)}"
+                                            (click)="cancelRow(i)">
                                             <i class="fa-solid fa-xmark"></i>
                                         </button>
                                     </ng-container>
@@ -78,8 +77,11 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table> 
-                    <mat-paginator showFirstLastButtons [length]="rows.length" [pageSize]="itemsPerPage" [pageSizeOptions]="[5, 10, 20]" (page)="pageChanged($event)"></mat-paginator>
+                    </table>
+
+                    <mat-paginator showFirstLastButtons [length]="rows.length" [pageSize]="itemsPerPage"
+                        [pageSizeOptions]="[5, 10, 20]" (page)="pageChanged($event)"></mat-paginator>
+
                 </div><br>
                 <div style="float: right;">
                     <button class="btn btn-success" (click)="showDataAsJson()">Show Data</button>

@@ -1,9 +1,9 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PostsService } from '@core/service/posts.service';
 import { DailogCreateFormComponent } from 'app/popup/dailog-create-form/dailog-create-form.component';
-import { BehaviorSubject, Subject, Subscription, exhaustMap, tap } from 'rxjs';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 interface Driver {
   photo: any;
@@ -14,14 +14,26 @@ interface Driver {
   name: string;
   phone_no: string;
 }
+
 @Component({
   selector: 'app-driver',
   templateUrl: './driver.component.html',
   styleUrls: ['./driver.component.scss']
 })
 export class DriverComponent implements OnInit, OnChanges {
-  drivers: any;
-  @Input() refreshing=false;
+  drivers: Driver[] = [];
+  @Input() refreshing = false;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(private postsService: PostsService, public dialog: MatDialog) {
+    this.postsService.refreshNeeded$.subscribe(()=>{
+      this.getData()
+    })
+  }
+
+  ngOnInit(): void {
+    this.getData();
+  }
 
   driver: Driver = {
     driving_license_expiration: '',
@@ -32,26 +44,27 @@ export class DriverComponent implements OnInit, OnChanges {
     id: '',
     photo: undefined
   };
-  service: any;
-  refreshData: any;
 
-  constructor(private postsService: PostsService, public dialog: MatDialog) {
+  currentPage = 0;
+  itemsPerPage = 10;
+  totalItems = 0;
 
-    this.postsService.refreshNeeded$.subscribe(()=>{
-      this.getData()
-    })
-  }
- 
-  ngOnInit(): void {
-    this.getData()
-  
+  ngOnChanges(): void {
+    if (this.refreshing) {
+      this.getData();
+    }
   }
 
-  ngOnChanges() {
-    console.log('In toolbar', this.refreshing);
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
   }
 
-  isDisable: boolean = true
+  getPaginatedData(): Driver[] {
+    const startIndex = this.currentPage * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.drivers.slice(startIndex, endIndex);
+  }
 
   dataForm = new FormGroup({
     driving_license_expiration: new FormControl(''),
@@ -62,7 +75,6 @@ export class DriverComponent implements OnInit, OnChanges {
     photo: new FormControl<File | null | undefined>(null)
   });
 
-
   openCreate(enterAnimationDuration: string, exitAnimationDuration: string): void {
     this.dialog.open(DailogCreateFormComponent, {
       disableClose: true,
@@ -72,7 +84,6 @@ export class DriverComponent implements OnInit, OnChanges {
     });
   }
 
-  //sort table to all value 
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -98,6 +109,7 @@ export class DriverComponent implements OnInit, OnChanges {
       .subscribe(response => {
         console.log('response', response);
         this.drivers = response.results;
+        this.totalItems = this.drivers.length;
       });
   }
 
@@ -105,7 +117,6 @@ export class DriverComponent implements OnInit, OnChanges {
     this.postsService.deleteData(driver.id).subscribe(
       () => {
         console.log('Driver deleted successfully');
-        this.getData();
       },
       error => {
         console.error('Error deleting driver:', error);

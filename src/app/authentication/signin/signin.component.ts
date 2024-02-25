@@ -90,11 +90,11 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
           (res: any) => {
             if (res && res.key) {
               localStorage.setItem('sid', res.key);
-              console.log('success');
-              this.router.navigate(['/dashboard/main']);
+              // this.router.navigate(['/dashboard/main']);
             } else {
               this.error = 'Invalid Login';
             }
+            this.router.navigate(['/dashboard/main']);
             this.isLoading = false;
           },
           (error) => {

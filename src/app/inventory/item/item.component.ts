@@ -24,10 +24,9 @@ export class ItemComponent {
   }
   
   addNewRow() {
-    const newRowId = this.rows.length + 1;
+    const newRowId = this.rows.length;
     this.rows.push({ id: newRowId, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true });
-  }
-  
+  }  
   
   allInputsFilled(index: number): boolean {
     const row = this.rows[index];
@@ -38,7 +37,7 @@ export class ItemComponent {
     if (!this.isRowValid(this.rows[index])) {
       return;
     }
-    this.rows[index].isNew = false;
+    this.rows[index].isNew = true;
     this.rows[index].saved = true;
     this.rows[index].editing = false;
     console.log("Saved row:", this.rows[index]);
@@ -70,10 +69,10 @@ export class ItemComponent {
 
   showDataAsJson() {
     const dataToDisplay = this.rows.map(({ id, name, age, gender, kh_name, grade, isNew }) => {
-      if (id !== undefined) {
-        return { id, name, age, gender, kh_name, grade, isNew };
-      } else {
+      if (isNew) {
         return { name, age, gender, kh_name, grade, isNew };
+      } else {
+        return { id, name, age, gender, kh_name, grade, isNew };
       }
     });
     this.jsonData = JSON.stringify(dataToDisplay, null, 2);

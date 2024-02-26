@@ -24,6 +24,7 @@ export class DriverComponent implements OnInit, OnChanges {
   drivers: Driver[] = [];
   @Input() refreshing = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  searchText: any;
 
   constructor(private postsService: PostsService, public dialog: MatDialog) {
     this.postsService.refreshNeeded$.subscribe(()=>{

@@ -83,18 +83,18 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
     this.submitted = true;
     this.error = '';
     this.isLoading = true;
-
+  
     if (this.loginForm.valid) {
       this.authService.login(this.form['username'].value, this.form['password'].value)
         .subscribe(
           (res: any) => {
             if (res && res.key) {
               localStorage.setItem('sid', res.key);
-              // this.router.navigate(['/dashboard/main']);
+
+              this.router.navigate(['/dashboard/main']);
             } else {
               this.error = 'Invalid Login';
             }
-            this.router.navigate(['/dashboard/main']);
             this.isLoading = false;
           },
           (error) => {
@@ -103,12 +103,12 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
             this.submitted = false;
           }
         );
-
+  
       this.rememberMeChecked = this.loginForm.get('rememberMe')?.value;
       if (this.rememberMeChecked) {
         const encryptedUsername = this.encryptData(this.loginForm.value.username);
         const encryptedPassword = this.encryptData(this.loginForm.value.password);
-
+  
         localStorage.setItem('username', encryptedUsername);
         localStorage.setItem('password', encryptedPassword);
         localStorage.setItem('rememberMe', 'true');
@@ -121,6 +121,7 @@ export class SigninComponent extends UnsubscribeOnDestroyAdapter implements OnIn
       this.isLoading = false;
     }
   }
+  
 
   encryptData(data: string): string {
     return CryptoJS.AES.encrypt(data, this.encryptionKey).toString();

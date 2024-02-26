@@ -8,7 +8,6 @@ import { DriverRoutingModule } from './driver-routing.module';
 import { DailogCreateFormComponent } from 'app/popup/dailog-create-form/dailog-create-form.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
-
 @NgModule({
   declarations: [DriverComponent, DailogCreateFormComponent],
   imports: [
@@ -17,7 +16,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+
   ],
   providers:[
     PostsService

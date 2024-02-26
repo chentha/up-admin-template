@@ -22,7 +22,7 @@ export class ItemComponent {
     this.currentPage = event.pageIndex + 1;
     this.itemsPerPage = event.pageSize;
   }
-  
+
   addNewRow() {
     const newRowId = this.rows.length;
     this.rows.push({ id: newRowId, name: '', age: '', gender: '', kh_name: '', grade: '', isNew: true, saved: false, editing: true });
@@ -71,7 +71,7 @@ export class ItemComponent {
     const dataToDisplay = this.rows.map(({ id, name, age, gender, kh_name, grade, isNew }) => {
       if (isNew) {
         return { name, age, gender, kh_name, grade, isNew };
-      } else {
+      }else{
         return { id, name, age, gender, kh_name, grade, isNew };
       }
     });

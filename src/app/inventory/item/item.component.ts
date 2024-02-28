@@ -9,6 +9,7 @@ export class ItemComponent {
   name = 'Angular';
   jsonData: string = '';
   editedRows: any[] = [];
+  searchText: string = '';
 
   rows = [
     { id: 1, name: '1', age: '1', gender: 'male', kh_name: '1', grade: '1', isNew: false, saved: true, editing: false },
@@ -76,6 +77,18 @@ export class ItemComponent {
       }
     });
     this.jsonData = JSON.stringify(dataToDisplay, null, 2);
+  }
+
+  getFilteredAndPaginatedRows() {
+    const filteredRows = this.rows.filter(row =>
+      row.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      row.age.toString().includes(this.searchText) ||
+      row.gender.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      row.kh_name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      row.grade.toString().includes(this.searchText)
+    );
+
+    return filteredRows.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
   }
   
 }

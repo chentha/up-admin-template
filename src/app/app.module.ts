@@ -27,9 +27,6 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { HeaderService } from '@core/interceptor/header.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DailogCreateFormComponent } from './popup/dailog-create-form/dailog-create-form.component';
-import { Ng2SearchPipeModule } from 'ng2-search-filter';
-
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');

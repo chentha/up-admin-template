@@ -3,8 +3,11 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
+      <div class="box_btn">
+        <button class="btn_create" mat-raised-button (click)="openCreate('300ms', '300ms')">Add New</button>
+        <input type="text" class="form-control box_search" [(ngModel)]="searchText" placeholder="Search...">
+      </div>
       <div class="table-responsive">
-        <button class="btn_create" mat-raised-button (click)="openCreate('300ms', '300ms')">Add New</button><br><br>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -35,7 +38,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let driver of drivers | slice: (currentPage * itemsPerPage):(currentPage * itemsPerPage + itemsPerPage)">
+            <tr *ngFor="let driver of getFilteredAndPaginatedRows()">
               <td>{{ driver.id }}</td>
               <td>{{ driver.driving_license_expiration }}</td>
               <td>{{ driver.id_card }}</td>
@@ -53,8 +56,8 @@
             </tr>
           </tbody>
         </table>
-        <mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 20]" [pageSize]="itemsPerPage" [length]="totalItems"
-          (page)="onPageChange($event)">
+        <mat-paginator showFirstLastButtons [pageSizeOptions]="[5, 10, 20]" [pageSize]="itemsPerPage"
+          [length]="totalItems" (page)="onPageChange($event)">
         </mat-paginator>
       </div>
     </div>

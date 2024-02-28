@@ -1,4 +1,10 @@
-
-<div>
-    <h1>hi</h1>
-</div>
+<br><br><br>
+<p-organizationChart [value]="data">
+    <ng-template let-node pTemplate="person">
+        <div class="p-2 card text-center">
+            <img [src]="node.data.image" />
+            <div class="font-bold">{{ node.data.name }}</div>
+            <div>{{ node.data.title }}</div>
+        </div>
+    </ng-template>
+</p-organizationChart> 

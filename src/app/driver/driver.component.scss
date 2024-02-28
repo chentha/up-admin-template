@@ -25,7 +25,18 @@ thead tr th{
   cursor: pointer;
 }
 
+.box_search{
+  width: 210px;
+  height: 38px;
+  padding-left: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.561);
+  float: right;
+}
 
+.box_btn{
+  margin-bottom: 14px;
+}
 
 
 // .nav1{

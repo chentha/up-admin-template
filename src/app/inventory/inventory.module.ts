@@ -7,6 +7,7 @@ import { InventoryComponent } from './inventory.component';
 import { ItemComponent } from './item/item.component';
 import { WhereHouseComponent } from './where-house/where-house.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { OrganizationChartModule } from 'primeng/organizationchart';
 
 @NgModule({
   declarations: [InventoryComponent, ItemComponent, WhereHouseComponent],
@@ -15,11 +16,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     InventoryRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,
-    MatPaginatorModule
+    SharedModule, 
+    MatPaginatorModule,
+    OrganizationChartModule,
   ],
   providers:[
     
-  ]
+  ],
+  bootstrap:[]
 })
 export class InventoryModule { }

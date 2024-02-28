@@ -24,7 +24,7 @@ export class DriverComponent implements OnInit, OnChanges {
   drivers: Driver[] = [];
   @Input() refreshing = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  searchText: any;
+  searchText: string = '';
 
   constructor(private postsService: PostsService, public dialog: MatDialog) {
     this.postsService.refreshNeeded$.subscribe(()=>{
@@ -47,7 +47,7 @@ export class DriverComponent implements OnInit, OnChanges {
   };
 
   currentPage = 0;
-  itemsPerPage = 10;
+  itemsPerPage = 5;
   totalItems = 0;
 
   ngOnChanges(): void {
@@ -110,6 +110,7 @@ export class DriverComponent implements OnInit, OnChanges {
       .subscribe(response => {
         console.log('response', response);
         this.drivers = response.results;
+        this.currentPage = 0;
         this.totalItems = this.drivers.length;
       });
   }
@@ -125,6 +126,18 @@ export class DriverComponent implements OnInit, OnChanges {
     );
   }
 
+  getFilteredAndPaginatedRows(): Driver[] {
+    const filteredDrivers = this.drivers.filter(driver =>
+      Object.values(driver).some(value =>
+        value && typeof value === 'string' && value.toLowerCase().includes(this.searchText.toLowerCase())
+      )
+    );
+  
+    const startIndex = this.currentPage * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return filteredDrivers.slice(startIndex, endIndex);
+  }
+  
   openEdit(driver: Driver): void {
     this.dialog.open(DailogCreateFormComponent, {
       disableClose: true,
